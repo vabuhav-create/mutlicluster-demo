@@ -1,0 +1,62 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: capl-operational-alerts
+  namespace: prometheus-operator
+  labels:
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/name: capl
+spec:
+  groups:
+  - name: capl.operations
+    interval: 30s
+    rules:
+    # Alert if CAPL controller is down
+    - alert: CAPLControllerDown
+      expr: up{job="capl-controller-manager"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CAPL controller manager is down"
+        description: "The CAPL controller has been down for more than 5 minutes. No infrastructure reconciliation is happening."
+
+    # Alert if reconciliation is taking too long
+    - alert: CAPLSlowReconciliation
+      expr: histogram_quantile(0.99, rate(controller_runtime_reconcile_time_seconds_bucket{job="capl-controller-manager"}[5m])) > 60
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CAPL reconciliation is slow"
+        description: "P99 reconciliation time is over 60s for controller {{ $labels.controller }}. This may indicate API rate limiting or infrastructure issues."
+
+    # Alert if reconciliation errors are spiking
+    - alert: CAPLHighReconciliationErrorRate
+      expr: rate(controller_runtime_reconcile_errors_total{job="capl-controller-manager"}[5m]) > 0.1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CAPL reconciliation errors are elevated"
+        description: "Controller {{ $labels.controller }} is experiencing {{ $value }} errors/sec. Check logs and events for details."
+
+    # Alert if work queue is growing (backlog)
+    - alert: CAPLWorkQueueGrowing
+      expr: rate(workqueue_depth{job="capl-controller-manager"}[5m]) > 0
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CAPL work queue is growing"
+        description: "Work queue {{ $labels.name }} is growing by {{ $value }} items/sec. Controller may be overwhelmed or stuck."
+
+    # Alert if API client is getting rate limited
+    - alert: CAPLLinodeAPIRateLimited
+      expr: rate(rest_client_requests_total{job="capl-controller-manager", code="429"}[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CAPL is being rate limited by Linode API"
+        description: "CAPL is receiving HTTP 429 responses from Linode API at {{ $value }} req/sec. Operations will be delayed."

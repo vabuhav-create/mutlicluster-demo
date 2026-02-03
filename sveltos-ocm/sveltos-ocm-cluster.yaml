@@ -1,0 +1,13 @@
+apiVersion: sveltos.open-cluster-management.io/v1alpha1
+kind: SveltosOCMCluster
+metadata:
+  name: default
+  namespace: open-cluster-management
+spec:
+  # Token validity period (golang duration string)
+  # Default: 168h (7 days)
+  tokenValidity: "168h"
+
+  # Sync labels from ManagedCluster to SveltosCluster
+  # Default: true
+  labelSync: true

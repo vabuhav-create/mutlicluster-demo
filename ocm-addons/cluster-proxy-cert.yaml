@@ -1,0 +1,69 @@
+---
+# Issuer for cluster-proxy user server certificate
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cluster-proxy-selfsigned-issuer
+  namespace: open-cluster-management-addon
+spec:
+  selfSigned: {}
+---
+# CA Certificate for cluster-proxy
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-proxy-ca
+  namespace: open-cluster-management-addon
+spec:
+  isCA: true
+  commonName: cluster-proxy-ca
+  secretName: cluster-proxy-ca-secret
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  issuerRef:
+    name: cluster-proxy-selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+# CA Issuer for signing user server certificate
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cluster-proxy-ca-issuer
+  namespace: open-cluster-management-addon
+spec:
+  ca:
+    secretName: cluster-proxy-ca-secret
+---
+# User server TLS certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-proxy-user-serving
+  namespace: open-cluster-management-addon
+spec:
+  # Secret name required by cluster-proxy Helm chart
+  secretName: cluster-proxy-user-serving-cert
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - open-cluster-management
+  commonName: cluster-proxy-addon-user
+  dnsNames:
+    - cluster-proxy-addon-user
+    - cluster-proxy-addon-user.open-cluster-management-addon
+    - cluster-proxy-addon-user.open-cluster-management-addon.svc
+    - cluster-proxy-addon-user.open-cluster-management-addon.svc.cluster.local
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  issuerRef:
+    name: cluster-proxy-ca-issuer
+    kind: Issuer
+    group: cert-manager.io

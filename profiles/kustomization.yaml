@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: profiles
+
+resources:
+  - namespace.yaml
+  - kyverno.yaml
+
+configMapGenerator:
+  - name: disallow-latest-tag
+    files:
+      - disallow-latest-tag.yaml
+    options:
+      disableNameSuffixHash: true # https://github.com/kubernetes-sigs/kustomize/issues/4475
+
+replacements:
+  # - source:
+  #     kind: ConfigMap
+  #     name: disallow-latest-tag
+  #     fieldPath: metadata.name
+  #   targets:
+  #     - select:
+  #         kind: ClusterProfile
+  #         name: kyverno
+  #       fieldPaths:
+  #         - spec.policyRefs.[kind=ConfigMap].name
+  - source:
+      kind: ConfigMap
+      name: disallow-latest-tag
+      fieldPath: metadata.namespace
+    targets:
+      - select:
+          kind: ClusterProfile
+          name: kyverno
+        fieldPaths:
+          - spec.policyRefs.[kind=ConfigMap].namespace

@@ -1,0 +1,26 @@
+apiVersion: config.projectsveltos.io/v1beta1
+kind: ClusterProfile
+metadata:
+  name: kyverno
+spec:
+  clusterSelector:
+    matchLabels:
+      env: fv
+  helmCharts:
+    - chartName: kyverno/kyverno
+      chartVersion: v3.6.0
+      helmChartAction: Install
+      releaseName: kyverno-latest
+      releaseNamespace: kyverno
+      repositoryName: kyverno
+      repositoryURL: https://kyverno.github.io/kyverno/
+      valuesFrom:
+        - kind: Secret
+          name: "kyverno-{{ .Cluster.metadata.name }}"
+          namespace: "{{ .Cluster.metadata.namespace }}"
+          optional: true
+
+  policyRefs:
+    - kind: ConfigMap
+      name: disallow-latest-tag
+      namespace: default

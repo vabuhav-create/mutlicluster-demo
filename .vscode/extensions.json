@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "stateful.runme",
+        "mkhl.direnv"
+    ]
+}

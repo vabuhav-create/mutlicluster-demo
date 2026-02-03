@@ -1,0 +1,26 @@
+---
+apiVersion: lib.projectsveltos.io/v1beta1
+kind: Classifier
+metadata:
+  name: deploy-gatekeeper-3-9
+spec:
+  classifierLabels:
+    - key: gatekeeper
+      value: v3-9
+  kubernetesVersionConstraints:
+    - comparison: GreaterThanOrEqualTo
+      version: 1.24.0
+    - comparison: LessThan
+      version: 1.25.0
+---
+apiVersion: lib.projectsveltos.io/v1beta1
+kind: Classifier
+metadata:
+  name: deploy-gatekeeper-3-10
+spec:
+  classifierLabels:
+    - key: gatekeeper
+      value: v3-10
+  kubernetesVersionConstraints:
+    - comparison: GreaterThanOrEqualTo
+      version: 1.25.0

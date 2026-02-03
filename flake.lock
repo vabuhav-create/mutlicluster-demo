@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "kustomize-envsubst-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1724412527,
+        "narHash": "sha256-WeI6zHRl9vBsltbDM2WolruX34p5bbT0rIrYz+pqyEY=",
+        "owner": "logandavies181",
+        "repo": "kustomize-krm-envsubst",
+        "rev": "1ab8546d5e005c902b6625daccd7254a8b1eea74",
+        "type": "github"
+      },
+      "original": {
+        "owner": "logandavies181",
+        "ref": "v0.10.0",
+        "repo": "kustomize-krm-envsubst",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1765186076,
+        "narHash": "sha256-hM20uyap1a0M9d344I692r+ik4gTMyj60cQWO+hAYP8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "addf7cf5f383a3101ecfba091b98d0a1263dc9b8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "kustomize-envsubst-src": "kustomize-envsubst-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

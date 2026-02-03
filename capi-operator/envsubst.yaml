@@ -1,0 +1,8 @@
+apiVersion: kustomize-krm-envsubst/v1alpha
+kind: Envsubst
+metadata:
+  name: envsubst
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: kustomize-krm-envsubst

@@ -1,0 +1,20 @@
+apiVersion: lib.projectsveltos.io/v1beta1
+kind: Classifier
+metadata:
+  name: lke-clusters
+spec:
+  classifierLabels:
+    - key: provider
+      value: linode
+    - key: managed-by
+      value: lke
+  deployedResourceConstraint:
+    resourceSelectors:
+      - group: ""
+        version: v1
+        kind: Node
+        namespace: ""
+        # Sélectionne les nœuds avec des labels Linode
+        labelFilters:
+          - key: "node.k8s.linode.com/host-uuid"
+            operation: Has

@@ -1,0 +1,15 @@
+{
+  "packages": [
+    "kind@latest",
+    "kubectl@1.34",
+    "kustomize@5.7.1",
+    "kubernetes-helm@latest",
+    "linode-cli@latest",
+    "clusterctl@latest",
+    "jq@latest",
+    "path:.#kustomize-krm-envsubst",
+    "path:.#clusteradm",
+    "kapp@latest",
+    "runme@latest"
+  ]
+}

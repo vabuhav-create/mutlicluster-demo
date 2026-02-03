@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ns.yaml
+  - clustermanager.yaml
+
+helmCharts:
+  - name: cluster-manager
+    includeCRDs: true
+    releaseName: cluster-manager
+    version: 1.2.0
+    namespace: open-cluster-management
+    repo: https://open-cluster-management.io/helm-charts
+    valuesInline:
+      createBootstrapToken: true
+      createBootstrapSA: true
+      clusterManager:
+        create: false # wait https://github.com/open-cluster-management-io/ocm/pull/1371
+        registrationConfiguration:
+          featureGates:
+            - feature: DefaultClusterSet
+              mode: Enable
+            - feature: ResourceCleanup
+              mode: Enable
+            - feature: ClusterImporter
+              mode: Enable
+            - feature: ManagedClusterAutoApproval
+              mode: Enable
+          importerConfiguration:
+            renderers:
+              - "render-auto"

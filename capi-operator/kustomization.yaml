@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ns.yaml
+  - core-provider.yaml
+  - kubeadm.yaml
+  - capl-provider.yaml
+  - caaph.yaml
+
+transformers:
+  - envsubst.yaml
+
+helmCharts:
+  - name: cluster-api-operator
+    includeCRDs: true
+    releaseName: capi-operator
+    version: 0.25.0
+    namespace: capi-operator-system
+    repo: https://kubernetes-sigs.github.io/cluster-api-operator

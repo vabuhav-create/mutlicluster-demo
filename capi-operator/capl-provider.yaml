@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capl-system
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: capl-variables
+  namespace: capl-system
+type: Opaque
+stringData:
+  LINODE_REGION: ${LINODE_REGION:-us-east}
+  LINODE_TOKEN: ${LINODE_TOKEN:-your-linode-token}
+  LINODE_CONTROL_PLANE_MACHINE_TYPE: ${LINODE_CONTROL_PLANE_MACHINE_TYPE:-g6-standard-4}
+  LINODE_MACHINE_TYPE: ${LINODE_MACHINE_TYPE:-g6-standard-2}
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: linode-linode
+  namespace: capl-system
+spec:
+  version: v0.10.1
+  configSecret:
+    name: capl-variables

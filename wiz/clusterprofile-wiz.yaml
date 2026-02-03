@@ -1,0 +1,83 @@
+apiVersion: config.projectsveltos.io/v1beta1
+kind: ClusterProfile
+metadata:
+  name: wiz-security
+spec:
+  clusterSelector:
+    matchLabels:
+      provider: linode
+
+  syncMode: Continuous
+
+  helmCharts:
+    - repositoryURL: https://charts.wiz.io/
+      repositoryName: wiz-sec
+      chartName: wiz-sec/wiz-kubernetes-integration
+      chartVersion: "0.3.6"
+      releaseName: wiz-admission-controller
+      releaseNamespace: wiz
+      helmChartAction: Install
+      values: |
+        global:
+          wizApiToken:
+            clientId: "XXXX"
+            clientToken: "XXXXXX"
+            clientEndpoint: ""
+
+        wiz-kubernetes-connector:
+          enabled: true
+          autoCreateConnector:
+            connectorName: "{{ .Cluster.metadata.name }}"
+            clusterExternalId: "{{ .Cluster.metadata.uid }}"
+          wiz-broker:
+            enabled: true
+
+        wiz-sensor:
+          enabled: false
+
+        wiz-admission-controller:
+          enabled: true
+          kubernetesAuditLogsWebhook:
+            enabled: true
+          opaWebhook:
+            enabled: true
+          imageIntegrityWebhook:
+            enabled: false
+      valuesFrom:
+        - kind: Secret
+          name: "wiz-sec-kubernetes-integration-{{ .Cluster.metadata.name }}"
+          namespace: "{{ .Cluster.metadata.namespace }}"
+          optional: true
+
+    - repositoryURL: https://charts.wiz.io/
+      repositoryName: wiz-sec
+      chartName: wiz-sec/wiz-admission-controller
+      chartVersion: "3.12.7"
+      releaseName: wiz-admission-controller
+      releaseNamespace: wiz
+      helmChartAction: Install
+      values: |
+        wizApiToken:
+          clientId: "XXXX"
+          clientToken: "XXXXXX"
+          clientEndpoint: ""
+
+        wiz-kubernetes-connector:
+          enabled: true
+
+        autoCreateConnector:
+          connectorName: "{{ .Cluster.metadata.name }}"
+
+        webhook:
+          clusterExternalId: "{{ .Cluster.metadata.uid }}"
+
+        wiz-admission-controller:
+          enabled: true
+
+        kubernetesAuditLogsWebhook:
+          enabled: true
+      valuesFrom:
+        - kind: Secret
+          name: "wiz-admission-controller-{{ .Cluster.metadata.name }}"
+          namespace: "{{ .Cluster.metadata.namespace }}"
+          optional: true

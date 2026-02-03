@@ -1,0 +1,16 @@
+charts/
+.env.local
+
+# kubeconfig files
+kubeconfig
+kubeconfig-*
+kubeconfig.*
+
+# AI
+.claude/
+
+# devbox
+.devbox/
+
+# runme files
+README-*.md

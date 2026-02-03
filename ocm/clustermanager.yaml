@@ -1,0 +1,33 @@
+apiVersion: operator.open-cluster-management.io/v1
+kind: ClusterManager
+metadata:
+  name: cluster-manager
+spec:
+  addOnManagerImagePullSpec: quay.io/open-cluster-management/addon-manager:v1.2.0
+  deployOption:
+    mode: Default
+  placementImagePullSpec: quay.io/open-cluster-management/placement:v1.2.0
+  registrationConfiguration:
+    autoApproveUsers:
+      - system:bootstrap:bootstrap-token-ocmhub
+      - system:serviceaccount:open-cluster-management:agent-registration-bootstrap
+    featureGates:
+      - feature: DefaultClusterSet
+        mode: Enable
+      - feature: ResourceCleanup
+        mode: Enable
+      - feature: ClusterImporter
+        mode: Enable
+      - feature: ManagedClusterAutoApproval
+        mode: Enable
+    importerConfiguration:
+      renderers:
+        - "render-auto"
+    registrationDrivers:
+      - authType: csr
+  registrationImagePullSpec: quay.io/open-cluster-management/registration:v1.2.0
+  resourceRequirement:
+    type: Default
+  workConfiguration:
+    workDriver: kube
+  workImagePullSpec: quay.io/open-cluster-management/work:v1.2.0

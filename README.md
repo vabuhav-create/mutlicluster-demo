@@ -57,13 +57,12 @@ direnv allow
 
 ```bash {"category":"init","excludeFromRunAll":"true","name":"create-lke-cluster"}
 linode-cli lke cluster-create \
-  --label kpp-tier2-management \
+  --label cilium-test \
   --region $LINODE_REGION \
   --k8s_version 1.34 \
   --node_pools.type g6-standard-2 \
   --node_pools.count 3 \
   --tags kpp-tier2,management \
-  # --apl_enabled false \
   --control_plane.high_availability false 
 ```
 

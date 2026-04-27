@@ -69,7 +69,7 @@ linode-cli lke cluster-create \
 #### Get kubeconfig
 
 ```sh {"category":"init","excludeFromRunAll":"true","name":"get-kubeconfig"}
-cluster_id=$(linode-cli lke clusters-list --label kpp-tier2-management --json | jq -r '.[0].id // empty')
+cluster_id=$(linode-cli lke clusters-list --label cilium-test --json | jq -r '.[0].id // empty')
 if [ -z "$cluster_id" ]; then
   echo "Error: Cluster not found" >&2
   exit 1
